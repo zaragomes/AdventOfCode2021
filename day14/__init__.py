@@ -17,22 +17,9 @@ def get_template_and_instructions_from_lines():
     return template, instructions
 
 
-# Part 1 Brute force
-# def daily_polymer_growth(template, instructions):
-#     match_index_counter = Counter()
-#     new_polymer = ""
-#     for i in range(0, len(template)-1):
-#         polymer_key = template[i] + template[i+1]
-#         if polymer_key in instructions.keys():
-#             polymer_val = instructions[polymer_key]
-#             match_index_counter[i+1] = True
-#             if match_index_counter[i]:
-#                 new_polymer += polymer_val + template[i+1]
-#             else:
-#                 new_polymer += template[i] + polymer_val + template[i+1]
-#     return new_polymer
-
 # converting the input polymer into strings of 2 characters, and getting the count of overlapping characters
+# so if we have NNCB, it gets converted to NN, NC, CB
+# counting the overlaps of each character to subtract them later
 def convert_polymer_into_couples(template):
     polymer_couples = Counter()
     overlaps = Counter()
@@ -47,6 +34,7 @@ def convert_polymer_into_couples(template):
 
 
 # daily growth.
+# if the pattern exists in the instructions, insert the new element and decrement the count of the pattern
 def daily_polymer_growth(template_couples, instructions, overlaps):
     new_template_couples = template_couples.copy()
     for template_couple, count in template_couples.items():
@@ -69,12 +57,10 @@ def polymer_growth_after_days(days):
     new_template_couples = Counter()
     instruction_couples = Counter(instructions)
     template_couples, overlaps = convert_polymer_into_couples(template)
-
     while days > 0:
         new_template_couples, overlaps = daily_polymer_growth(template_couples, instruction_couples, overlaps)
         template_couples = new_template_couples
         days -= 1
-
     return new_template_couples, overlaps
 
 
@@ -89,11 +75,17 @@ def get_totals(template, overlaps):
     return totals
 
 
-days = 40
-new_polymer, overlapping_elements = polymer_growth_after_days(days)
-totals = get_totals(new_polymer, overlapping_elements)
-most_common = max(Counter(totals).values())
-least_common = min(Counter(totals).values())
-print(most_common - least_common)
-
-
+# Part 1 Brute force
+# def daily_polymer_growth(template, instructions):
+#     match_index_counter = Counter()
+#     new_polymer = ""
+#     for i in range(0, len(template)-1):
+#         polymer_key = template[i] + template[i+1]
+#         if polymer_key in instructions.keys():
+#             polymer_val = instructions[polymer_key]
+#             match_index_counter[i+1] = True
+#             if match_index_counter[i]:
+#                 new_polymer += polymer_val + template[i+1]
+#             else:
+#                 new_polymer += template[i] + polymer_val + template[i+1]
+#     return new_polymer
